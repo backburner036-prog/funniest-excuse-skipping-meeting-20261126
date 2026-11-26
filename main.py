@@ -40,11 +40,14 @@ def save_line(text, path="/output/entry.txt"):
 
 def main():
     n = check_len(TEXT)
-    save_line(TEXT)
-    back = open("/output/entry.txt", encoding="utf-8").read()
+    # Pakai path yang dikembalikan save_line, bukan path hardcode kedua:
+    # sebelumnya main() membuka "/output/entry.txt" mentah-mentah (tanpa
+    # context manager, path duplikat) untuk verifikasi round-trip.
+    out = save_line(TEXT)
+    back = out.read_text(encoding="utf-8")
     assert back == TEXT, "isi file tidak sama persis dengan TEXT"
     print(TEXT)
-    print(f"OK: {n} karakter -> /output/entry.txt")
+    print(f"OK: {n} karakter -> {out}")
 
 
 if __name__ == "__main__":
